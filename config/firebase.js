@@ -1,98 +1,53 @@
-const admin = require('firebase-admin');
+// MySQL utilities (Firebase functionality removed)
 require('dotenv').config();
 
-// Initialize Firebase Admin SDK
-function initializeFirebase() {
-    try {
-        // Check if already initialized
-        if (admin.apps.length === 0) {
-            const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
-            
-            const serviceAccount = {
-                type: "service_account",
-                project_id: process.env.FIREBASE_PROJECT_ID,
-                private_key: privateKey,
-                client_email: process.env.FIREBASE_CLIENT_EMAIL,
-            };
+// MySQL utility functions (replacing Firebase functions)
+const mysqlUtils = {
+    // Generate unique ID for messages
+    generateMessageId() {
+        return Date.now().toString() + Math.random().toString(36).substr(2, 9);
+    },
 
-            admin.initializeApp({
-                credential: admin.credential.cert(serviceAccount),
-                projectId: process.env.FIREBASE_PROJECT_ID,
-            });
-            
-            console.log('✅ Firebase Admin SDK initialized successfully');
-        }
+    // Format timestamp for MySQL
+    formatTimestamp(date = new Date()) {
+        return date.toISOString().slice(0, 19).replace('T', ' ');
+    },
+
+    // Sanitize input for MySQL
+    sanitizeInput(input) {
+        if (typeof input !== 'string') return input;
+        return input.replace(/[<>"'%;()&+]/g, '');
+    },
+
+    // Generate avatar URL based on username
+    generateAvatarUrl(username) {
+        const colors = ['FF6B6B', '4ECDC4', '45B7D1', '96CEB4', 'FFEAA7', 'DDA0DD', 'FF7F7F'];
+        const colorIndex = username.charCodeAt(0) % colors.length;
+        const bgColor = colors[colorIndex];
+        const initial = username.charAt(0).toUpperCase();
         
-        return admin;
-    } catch (error) {
-        console.error('❌ Error initializing Firebase:', error.message);
-        // Don't exit process, continue without Firebase if needed
-        return null;
-    }
-}
-
-// Get Firestore database instance
-function getFirestore() {
-    try {
-        const firebaseAdmin = initializeFirebase();
-        if (firebaseAdmin) {
-            return firebaseAdmin.firestore();
-        }
-        return null;
-    } catch (error) {
-        console.error('❌ Error getting Firestore instance:', error.message);
-        return null;
-    }
-}
-
-// Firebase utility functions
-const firebaseUtils = {
-    // Verify Firebase ID token
-    async verifyIdToken(idToken) {
-        try {
-            const firebaseAdmin = initializeFirebase();
-            if (!firebaseAdmin) return null;
-            
-            const decodedToken = await firebaseAdmin.auth().verifyIdToken(idToken);
-            return decodedToken;
-        } catch (error) {
-            console.error('Error verifying Firebase ID token:', error);
-            return null;
-        }
+        return `https://ui-avatars.com/api/?name=${initial}&background=${bgColor}&color=fff&size=100`;
     },
 
-    // Create custom token
-    async createCustomToken(uid, additionalClaims = {}) {
-        try {
-            const firebaseAdmin = initializeFirebase();
-            if (!firebaseAdmin) return null;
-            
-            const customToken = await firebaseAdmin.auth().createCustomToken(uid, additionalClaims);
-            return customToken;
-        } catch (error) {
-            console.error('Error creating custom token:', error);
-            return null;
-        }
+    // Validate email format
+    isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
     },
 
-    // Get user by UID
-    async getUserByUid(uid) {
-        try {
-            const firebaseAdmin = initializeFirebase();
-            if (!firebaseAdmin) return null;
-            
-            const userRecord = await firebaseAdmin.auth().getUser(uid);
-            return userRecord;
-        } catch (error) {
-            console.error('Error getting user by UID:', error);
-            return null;
-        }
+    // Generate session ID
+    generateSessionId() {
+        return require('crypto').randomBytes(32).toString('hex');
     }
 };
 
+// Initialize function (no longer needed for Firebase)
+function initializeServices() {
+    console.log('✅ MySQL utilities initialized successfully');
+    return true;
+}
+
 module.exports = {
-    initializeFirebase,
-    getFirestore,
-    firebaseUtils,
-    admin
+    initializeServices,
+    mysqlUtils
 };

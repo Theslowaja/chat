@@ -29,11 +29,6 @@ const User = sequelize.define('User', {
         type: DataTypes.STRING(255),
         allowNull: false
     },
-    firebase_uid: {
-        type: DataTypes.STRING(128),
-        allowNull: true,
-        unique: true
-    },
     avatar_url: {
         type: DataTypes.TEXT,
         allowNull: true
@@ -55,7 +50,6 @@ const User = sequelize.define('User', {
     indexes: [
         { fields: ['username'] },
         { fields: ['email'] },
-        { fields: ['firebase_uid'] },
         { fields: ['status'] },
         { fields: ['is_online'] }
     ]
@@ -160,10 +154,6 @@ const Message = sequelize.define('Message', {
     is_deleted: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
-    },
-    firebase_message_id: {
-        type: DataTypes.STRING(255),
-        allowNull: true
     }
 }, {
     tableName: 'messages',
@@ -172,8 +162,7 @@ const Message = sequelize.define('Message', {
         { fields: ['room_id'] },
         { fields: ['created_at'] },
         { fields: ['type'] },
-        { fields: ['is_deleted'] },
-        { fields: ['firebase_message_id'] }
+        { fields: ['is_deleted'] }
     ]
 });
 
