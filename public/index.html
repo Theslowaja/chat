@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>SecureChat - Real-time Chat</title>
+    <meta name="description" content="Secure real-time chat application">
+    <meta name="theme-color" content="#667eea">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Authentication Modal -->
+    <div id="authModal" class="modal">
+        <div class="modal-content auth-modal">
+            <div class="auth-header">
+                <i class="fas fa-shield-alt"></i>
+                <h2 id="authTitle">Welcome to SecureChat</h2>
+                <p id="authSubtitle">Please login or register to continue</p>
+            </div>
+            
+            <!-- Login Form -->
+            <form id="loginForm" class="auth-form">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="loginUsername" placeholder="Username" required maxlength="20">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="loginPassword" placeholder="Password" required>
+                </div>
+                <button type="submit" class="auth-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Login
+                </button>
+                <p class="auth-switch">Don't have an account? <a href="#" id="showRegister">Register here</a></p>
+            </form>
+            
+            <!-- Register Form -->
+            <form id="registerForm" class="auth-form hidden">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="registerUsername" placeholder="Username" required maxlength="20" minlength="3">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="registerEmail" placeholder="Email" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="registerPassword" placeholder="Password" required minlength="6">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="confirmPassword" placeholder="Confirm Password" required minlength="6">
+                </div>
+                <button type="submit" class="auth-btn">
+                    <i class="fas fa-user-plus"></i>
+                    Register
+                </button>
+                <p class="auth-switch">Already have an account? <a href="#" id="showLogin">Login here</a></p>
+            </form>
+            
+            <!-- Demo Account Info -->
+            <div class="demo-info">
+                <p><i class="fas fa-info-circle"></i> Demo Account:</p>
+                <p>Username: <strong>demo</strong> | Password: <strong>demo123</strong></p>
+            </div>
+            
+            <!-- Loading Spinner -->
+            <div id="authLoading" class="loading hidden">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Please wait...</p>
+            </div>
+            
+            <!-- Error Message -->
+            <div id="authError" class="error-message hidden">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span id="errorText"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Chat Interface -->
+    <div id="chatContainer" class="hidden">
+        <!-- Header -->
+        <header class="chat-header">
+            <div class="header-left">
+                <i class="fas fa-comments"></i>
+                <h1>Chat Room</h1>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="currentUsername"></span>
+                </div>
+                <button id="leaveButton" class="leave-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Leave
+                </button>
+            </div>
+        </header>
+
+        <!-- Chat Content -->
+        <div class="chat-content">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <i class="fas fa-users"></i>
+                    <h3>Online Users (<span id="userCount">0</span>)</h3>
+                </div>
+                <div id="usersList" class="users-list"></div>
+            </aside>
+
+            <!-- Main Chat Area -->
+            <main class="chat-main">
+                <div id="messagesContainer" class="messages-container">
+                    <div class="welcome-message">
+                        <i class="fas fa-comments"></i>
+                        <h3>Welcome to the Chat!</h3>
+                        <p>Start a conversation with other users</p>
+                    </div>
+                </div>
+                
+                <!-- Typing Indicator -->
+                <div id="typingIndicator" class="typing-indicator hidden">
+                    <div class="typing-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <span id="typingText"></span>
+                </div>
+
+                <!-- Message Input -->
+                <div class="message-input-container">
+                    <form id="messageForm" class="message-form">
+                        <div class="input-wrapper">
+                            <input type="text" id="messageInput" placeholder="Type your message..." maxlength="500" autocomplete="off">
+                            <button type="submit" id="sendButton">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
